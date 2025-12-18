@@ -1,34 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Preview from './pages/Preview'
+import Home from './pages/Home'
+import Form from './pages/Form'
+import NavBar from './components/NavBar'
+import ErrorFallback from './components/ErrorFallback.jsx'
+import { ErrorBoundary } from 'react-error-boundary'
+import ProtectedRoute from './components/ProtectedRoute'
+import { ROUTES_PATH } from './constant';
+import DownloadSuccess from './pages/DownloadSuccess.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <BrowserRouter>
+      <NavBar />
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+
+        <Routes>
+           {/* Public Route */}
+            <Route path={ROUTES_PATH.HOME} element={<Home />} />
+         {/* Protected Form Route */}
+        <Route 
+          path={ROUTES_PATH.FORM_SECTIONS} 
+          element={
+            <ProtectedRoute route={ROUTES_PATH.FORM_SECTIONS}>
+              <Form />
+            </ProtectedRoute>
+          } 
+        />
+                  {/* Protected Preview Route */}
+        <Route 
+          path={ROUTES_PATH.PREVIEW} 
+          element={
+            <ProtectedRoute route={ROUTES_PATH.PREVIEW}>
+              <Preview />
+            </ProtectedRoute>
+          } 
+        />
+        {/* Download Resume Success Page */}
+        <Route path={ROUTES_PATH.RESUME_SUCCESS} element={<DownloadSuccess />} />
+        </Routes>
+      </ErrorBoundary>
+
+    </BrowserRouter >
+
+
   )
 }
 
